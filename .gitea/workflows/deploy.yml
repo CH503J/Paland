@@ -3,19 +3,25 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - master   # 如果你的主分支叫 master，改成 master
+      - master
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest   # 取决于你给runner打的标签，下面有说明
+  build-and-deploy:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build and restart container
+      - name: 拉取代码
         run: |
-          docker compose down
-          docker compose up -d --build
+          git clone http://192.168.101.100:3000/root/PaLand.git .
 
-      - name: Show running status
-        run: docker compose ps
+      - name: 构建镜像
+        run: docker build -t PaLand:latest .
+
+      - name: 停止旧容器并启动新容器
+        run: |
+          docker stop PaLand || true
+          docker rm PaLand || true
+          docker run -d \
+            --name PaLand \
+            --restart always \
+            -p 18888:18888 \
+            PaLand:latest
