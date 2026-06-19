@@ -1,0 +1,21 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main   # 如果你的主分支叫 master，改成 master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest   # 取决于你给runner打的标签，下面有说明
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build and restart container
+        run: |
+          docker compose down
+          docker compose up -d --build
+
+      - name: Show running status
+        run: docker compose ps

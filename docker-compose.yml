@@ -1,0 +1,13 @@
+services:
+  paland-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: paland-web:latest
+    container_name: paland-web
+    restart: unless-stopped
+    ports:
+      - "18888:18888"
+    environment:
+      - TZ=Asia/Shanghai
+    # 如果后续接数据库、Redis等，在这里加 networks 或 depends_on
