@@ -3,7 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - main   # 如果你的主分支叫 master，改成 master
+      - master   # 如果你的主分支叫 master，改成 master
 
 jobs:
   deploy:
