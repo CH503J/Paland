@@ -14,14 +14,14 @@ jobs:
           git clone http://192.168.101.100:3000/root/PaLand.git .
 
       - name: 构建镜像
-        run: docker build -t PaLand:latest .
+        run: docker build -t paland:latest .
 
       - name: 停止旧容器并启动新容器
         run: |
-          docker stop PaLand || true
-          docker rm PaLand || true
+          docker stop paland || true
+          docker rm paland || true
           docker run -d \
-            --name PaLand \
+            --name paland \
             --restart always \
             -p 18888:18888 \
-            PaLand:latest
+            paland:latest
