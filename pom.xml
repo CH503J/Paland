@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>paland-web</module>
+        <module>paland-admin</module>
     </modules>
 
     <properties>

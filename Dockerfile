@@ -5,7 +5,7 @@ WORKDIR /build
 
 # 先只拷贝所有pom.xml（利用Docker层缓存，依赖不变时不用重新下载）
 COPY pom.xml .
-COPY paland-web/pom.xml paland-web/
+COPY paland-admin/pom.xml paland-admin/
 
 # 后续新增子模块时，在这里追加一行，例如：
 # COPY paland-common/pom.xml paland-common/
@@ -17,7 +17,7 @@ RUN mvn -B dependency:go-offline -DskipTests
 COPY . .
 
 # 整体构建（多模块项目必须在根目录构建，子模块间的依赖才能正确解析）
-RUN mvn -B clean package -DskipTests -pl paland-web -am
+RUN mvn -B clean package -DskipTests -pl paland-admin -am
 
 # ===== 运行阶段 =====
 FROM eclipse-temurin:21-jre-alpine AS runtime
@@ -27,7 +27,7 @@ WORKDIR /app
 # 非root用户运行，提升安全性
 RUN addgroup -S spring && adduser -S spring -G spring
 
-COPY --from=builder /build/paland-web/target/*.jar app.jar
+COPY --from=builder /build/paland-admin/target/*.jar app.jar
 
 RUN chown spring:spring app.jar
 USER spring
