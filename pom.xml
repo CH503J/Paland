@@ -11,6 +11,7 @@
 
     <modules>
         <module>paland-admin</module>
+        <module>paland-common</module>
     </modules>
 
     <properties>
@@ -40,5 +41,26 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <!-- 插件版本统一管理：子模块直接引用，不用写 version -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <parameters>true</parameters>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
