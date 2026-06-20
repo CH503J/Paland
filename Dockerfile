@@ -6,6 +6,7 @@ WORKDIR /build
 # 先只拷贝所有pom.xml（利用Docker层缓存，依赖不变时不用重新下载）
 COPY pom.xml .
 COPY paland-admin/pom.xml paland-admin/
+COPY paland-common/pom.xml paland-common/
 
 # 后续新增子模块时，在这里追加一行，例如：
 # COPY paland-common/pom.xml paland-common/
