@@ -24,4 +24,6 @@ jobs:
             --name paland \
             --restart always \
             -p 18888:18888 \
+            -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            -e REDIS_PASSWORD="${{ secrets.REDIS_PASSWORD }}" \
             paland:latest
