@@ -1,4 +1,4 @@
-package org.paland.module.demo;
+package org.paland.admin.module.demo;
 
 import jakarta.validation.Valid;
 import org.paland.common.exception.BusinessException;

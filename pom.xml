@@ -12,6 +12,7 @@
     <modules>
         <module>paland-admin</module>
         <module>paland-common</module>
+        <module>paland-system</module>
     </modules>
 
     <properties>
