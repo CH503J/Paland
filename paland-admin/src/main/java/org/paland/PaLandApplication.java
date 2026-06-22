@@ -5,9 +5,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 
 @Slf4j
 @SpringBootApplication
+@Import(cn.hutool.extra.spring.SpringUtil.class)
 @MapperScan(value = "org.paland.system.module", annotationClass = Mapper.class)
 public class PaLandApplication {
 

@@ -15,6 +15,22 @@ spring:
       password: ${REDIS_PASSWORD}
       database: 0
 
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      # never 表示不让 spring 参与建表，所以只能手动建表
+      initialize-schema: never
+    properties:
+      org:
+        quartz:
+          jobStore:
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            useProperties: false
+            tablePrefix: QRTZ_
+          scheduler:
+            instanceName: PalandScheduler
+            instanceId: AUTO
+
 mybatis-plus:
   global-config:
     db-config:

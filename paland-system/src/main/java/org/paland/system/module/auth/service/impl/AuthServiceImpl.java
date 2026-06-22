@@ -19,10 +19,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    @Resource
-    private UserMapper userMapper;
-    @Resource
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserMapper userMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public void register(RegisterRequestDTO request) {

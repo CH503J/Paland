@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    @Resource
-    private AuthService authService;
+    private final AuthService authService;
 
     /**
      * 注册
