@@ -26,4 +26,5 @@ jobs:
             -p 18888:18888 \
             -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
             -e REDIS_PASSWORD="${{ secrets.REDIS_PASSWORD }}" \
+            -e SPRING_PROFILES_ACTIVE=prod \
             paland:latest

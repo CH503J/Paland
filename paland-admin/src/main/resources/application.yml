@@ -1,19 +1,7 @@
-server:
-  # 服务器的HTTP端口，默认为8088
-  port: 18888
-  servlet:
-    # 应用的访问路径
-    context-path: /
-  tomcat:
-    # tomcat的URI编码
-    uri-encoding: UTF-8
-    threads:
-      # tomcat最大线程数，默认为200
-      max: 800
-      # Tomcat启动初始化的线程数，默认值25
-      min-spare: 30
-
 spring:
+  profiles:
+    active: dev
+
   datasource:
     url: jdbc:mysql://192.168.101.100:3306/paland?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
@@ -28,19 +16,30 @@ spring:
       database: 0
 
 mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 打印SQL，方便调试，上线前可以去掉
   global-config:
     db-config:
-      logic-delete-field: deleted   # 逻辑删除字段名，看你表设计是否需要
+      logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
 
 sa-token:
   token-name: satoken
-  timeout: 2592000        # token有效期，单位秒，这里是30天
-  active-timeout: -1      # 暂不限制最低活跃频率
-  is-concurrent: true     # 同一账号是否允许多地登录
-  is-share: true          # 多地登录是否共用一个token
-  is-log: true            # todo 打印sa-token的操作日志，方便调试，但是会打印登录 token，上线时一定要改成 false
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: true
+
+server:
+  # 服务器的HTTP端口，默认为8088
+  port: 18888
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    threads:
+      # tomcat最大线程数，默认为200
+      max: 800
+      # Tomcat启动初始化的线程数，默认值25
+      min-spare: 30
