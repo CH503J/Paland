@@ -1,5 +1,6 @@
 package org.paland.system.module.job.task;
 
+import cn.hutool.core.date.DateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,6 @@ import org.springframework.stereotype.Component;
 public class DemoLogTask {
 
     public void run() {
-        log.info("【定时任务验证】DemoLogTask 跳动一次，当前时间：{}", System.currentTimeMillis());
+        log.info("【定时任务验证】DemoLogTask 跳动一次，当前时间：{}", DateTime.now());
     }
 }
