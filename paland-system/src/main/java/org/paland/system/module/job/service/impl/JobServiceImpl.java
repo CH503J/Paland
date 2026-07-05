@@ -23,20 +23,30 @@ public class JobServiceImpl implements JobService {
     @Override
     public void addJob(String jobName, String jobGroup, String invokeTarget, String cron) throws SchedulerException {
         JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+        TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroup); // 显式声明 TriggerKey
 
+        // 1. 构建 JobDetail
         JobDetail jobDetail = JobBuilder.newJob(QuartzJobExecution.class)
                 .withIdentity(jobKey)
                 .build();
         jobDetail.getJobDataMap().put("invokeTarget", invokeTarget);
 
+        // 2. 构建 CronScheduleBuilder 并设置【关键】防卡死策略
+        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cron)
+                .withMisfireHandlingInstructionDoNothing(); // 核心：错过不补跑，防止暂停恢复后卡死
+
+        // 3. 构建 Trigger
         CronTrigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity(jobName, jobGroup)
-                .withSchedule(CronScheduleBuilder.cronSchedule(cron))
+                .withIdentity(triggerKey) // 统一使用 triggerKey 标识
+                .withSchedule(scheduleBuilder)
                 .build();
 
+        // 4. 清理旧任务（防冲突）
         if (scheduler.checkExists(jobKey)) {
             scheduler.deleteJob(jobKey);
         }
+
+        // 5. 调度任务
         scheduler.scheduleJob(jobDetail, trigger);
     }
 
@@ -48,7 +58,16 @@ public class JobServiceImpl implements JobService {
      */
     @Override
     public void pauseJob(String jobName, String jobGroup) throws SchedulerException {
-        scheduler.pauseJob(JobKey.jobKey(jobName, jobGroup));
+        JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+        TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroup);
+
+        // 健壮性检查：存在才操作，防止因命名空间不一致引发报错
+        if (scheduler.checkExists(jobKey)) {
+            scheduler.pauseJob(jobKey);
+        }
+        if (scheduler.checkExists(triggerKey)) {
+            scheduler.pauseTrigger(triggerKey);
+        }
     }
 
     /**
@@ -59,7 +78,19 @@ public class JobServiceImpl implements JobService {
      */
     @Override
     public void resumeJob(String jobName, String jobGroup) throws SchedulerException {
-        scheduler.resumeJob(JobKey.jobKey(jobName, jobGroup));
+        JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+        TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroup);
+
+        // 1. 恢复 Job 状态
+        if (scheduler.checkExists(jobKey)) {
+            scheduler.resumeJob(jobKey);
+        }
+
+        // 2. 恢复 Trigger 状态
+        if (scheduler.checkExists(triggerKey)) {
+            scheduler.resumeTrigger(triggerKey);
+        }
+        // 【移除 rescheduleJob】因为事务解耦后，单纯的 resumeTrigger 就足以将状态从 ACQUIRED 刷新并正常推动执行！
     }
 
     /**

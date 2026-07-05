@@ -38,33 +38,23 @@ public class SysJobServiceImpl implements SysJobService {
      * @throws SchedulerException 当Quartz任务操作失败时抛出
      */
     @Override
-    @Transactional
+    // 移除方法上的 @Transactional 注解！
     public SysJobResponseVO createJob(SysJobCreateRequestDTO dto) throws SchedulerException {
-        SysJob sysJob = new SysJob();
-
-        BeanUtil.copyProperties(dto, sysJob);
-
-        // 先统一存为暂停状态
-        sysJob.setStatus(0);
-        if (StrUtil.isBlank(dto.getJobGroup())) {
-            sysJob.setJobGroup("DEFAULT");
-        }
         if (CronUtil.isInvalid(dto.getCronExpression())) {
             throw new BusinessException(ResultCode.INVALID_CRON_EXPRESSION, "cron表达式[" + dto.getCronExpression() + "]无效");
         }
 
-        sysJobMapper.insert(sysJob);
+        // 1. 先落库，提交 Spring 事务
+        SysJob sysJob = saveSysJobInTx(dto);
 
-        // 拼接Quartz识别用的jobName
+        // 2. 事务完成后，操作 Quartz
         String quartzName = "job_" + sysJob.getId();
-
-        // 无条件注册到Quartz（内部已经是PAUSE逻辑之前的安全写法，checkExists+scheduleJob）
         jobService.addJob(quartzName,
                 sysJob.getJobGroup(),
                 sysJob.getInvokeTarget(),
                 sysJob.getCronExpression());
 
-        // status=0 表示暂停，注册后立即暂停
+        // 默认为暂停状态
         if (sysJob.getStatus() == 0) {
             jobService.pauseJob(quartzName, sysJob.getJobGroup());
         }
@@ -72,6 +62,18 @@ public class SysJobServiceImpl implements SysJobService {
         SysJobResponseVO response = new SysJobResponseVO();
         BeanUtil.copyProperties(sysJob, response);
         return response;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public SysJob saveSysJobInTx(SysJobCreateRequestDTO dto) {
+        SysJob sysJob = new SysJob();
+        BeanUtil.copyProperties(dto, sysJob);
+        sysJob.setStatus(0); // 先统一存为暂停状态
+        if (StrUtil.isBlank(dto.getJobGroup())) {
+            sysJob.setJobGroup("DEFAULT");
+        }
+        sysJobMapper.insert(sysJob);
+        return sysJob;
     }
 
     /**
@@ -83,29 +85,37 @@ public class SysJobServiceImpl implements SysJobService {
      * @throws SchedulerException 当Quartz任务操作失败时抛出
      */
     @Override
-    @Transactional
+    // 移除方法上的 @Transactional 注解！
     public SysJobResponseVO updateStatus(Long id, Integer status) throws SchedulerException {
-        SysJob sysJob = sysJobMapper.selectById(id);
-        if (sysJob == null) {
-            throw new BusinessException(ResultCode.JOB_NOT_FOUND, "定时任务[" + id + "]不存在");
-        }
-
         if (status != 0 && status != 1) {
             throw new BusinessException(ResultCode.JOB_STATUS_INVALID, "定时任务状态[" + status + "]无效");
         }
 
+        // 1. 在一个独立的短事务中更新数据库，并立刻提交释放锁
+        SysJob sysJob = updateJobStatusInTx(id, status);
+
+        // 2. 事务提交后，再安全地去操作 Quartz（此时没有 Spring 事务纠缠，状态绝对不卡死）
         String quartzName = "job_" + sysJob.getId();
         if (status == 0) {
             jobService.pauseJob(quartzName, sysJob.getJobGroup());
         } else {
             jobService.resumeJob(quartzName, sysJob.getJobGroup());
         }
-        sysJob.setStatus(status);
-        sysJobMapper.updateById(sysJob);
 
         SysJobResponseVO vo = new SysJobResponseVO();
         BeanUtil.copyProperties(sysJob, vo);
         return vo;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public SysJob updateJobStatusInTx(Long id, Integer status) {
+        SysJob sysJob = sysJobMapper.selectById(id);
+        if (sysJob == null) {
+            throw new BusinessException(ResultCode.JOB_NOT_FOUND, "定时任务[" + id + "]不存在");
+        }
+        sysJob.setStatus(status);
+        sysJobMapper.updateById(sysJob);
+        return sysJob;
     }
 
     /**
