@@ -1,16 +1,19 @@
 spring:
   profiles:
     active: dev
+  threads:
+    virtual:
+      enabled: true
 
   datasource:
-    url: jdbc:mysql://192.168.101.100:3306/paland?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.2.100:3306/paland?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
     redis:
-      host: 192.168.101.100
+      host: 192.168.2.100
       port: 6379
       password: ${REDIS_PASSWORD}
       database: 0

@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: 拉取代码
         run: |
-          git clone http://192.168.101.100:3000/root/PaLand.git .
+          git clone http://192.168.2.100:3000/root/PaLand.git .
 
       - name: 构建镜像
         run: docker build -t paland:latest .
