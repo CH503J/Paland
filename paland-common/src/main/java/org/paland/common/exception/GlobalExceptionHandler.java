@@ -1,5 +1,6 @@
 package org.paland.common.exception;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import lombok.extern.slf4j.Slf4j;
 import org.paland.common.result.Result;
 import org.paland.common.result.ResultCode;
@@ -81,5 +82,13 @@ public class GlobalExceptionHandler {
 
         Result<Void> result = Result.fail(ResultCode.SYSTEM_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+    }
+
+    // 拦截 Sa-Token 全局未登录异常
+    @ExceptionHandler(NotLoginException.class)
+    public Result<Void> handlerNotLoginException(NotLoginException nle) {
+        // 打印堆栈或日志（可选）
+        // 根据不同场景，nle.getType() 可以拿到具体是 Token过期、未提供Token 还是 异地登录被踢
+        return Result.fail(ResultCode.UNAUTHORIZED, "令牌无效或已过期，请重新登录");
     }
 }
