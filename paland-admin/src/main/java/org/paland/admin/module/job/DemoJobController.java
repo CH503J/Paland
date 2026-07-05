@@ -1,4 +1,4 @@
-package org.paland.system.module.job.controller;
+package org.paland.admin.module.job;
 
 import lombok.RequiredArgsConstructor;
 import org.paland.common.result.Result;
@@ -56,6 +56,12 @@ public class DemoJobController {
     @PostMapping("/update")
     public Result<Void> updateDemoJob(@RequestParam String cron) throws SchedulerException {
         jobService.updateCron("demoLogJob", "DEFAULT", cron);
+        return Result.success();
+    }
+
+    @PostMapping("/delete")
+    public Result<Void> deleteDemoJob() throws SchedulerException {
+        jobService.deleteJob("demoLogJob", "DEFAULT");
         return Result.success();
     }
 }

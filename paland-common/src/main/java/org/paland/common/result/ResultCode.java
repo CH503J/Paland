@@ -26,7 +26,12 @@ public enum ResultCode {
 
     // ========== 业务相关（举例，后续按需扩展） ==========
     USER_NOT_FOUND("USER_NOT_FOUND", "用户不存在", 404),
-    USER_ALREADY_EXISTS("USER_ALREADY_EXISTS", "用户已存在", 409);
+    USER_ALREADY_EXISTS("USER_ALREADY_EXISTS", "用户已存在", 409),
+
+    // ========== 定时任务相关 ==========
+    INVALID_CRON_EXPRESSION("INVALID_CRON_EXPRESSION", "cron表达式无效", 400),
+    JOB_STATUS_INVALID("JOB_STATUS_INVALID", "定时任务状态无效", 400),
+    JOB_NOT_FOUND("JOB_NOT_FOUND", "定时任务不存在", 404);
 
     private final String code;
     private final String message;

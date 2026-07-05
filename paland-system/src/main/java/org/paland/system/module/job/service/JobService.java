@@ -38,5 +38,12 @@ public interface JobService {
      */
     void updateCron(String jobName, String jobGroup, String newCron) throws SchedulerException;
 
+    /**
+     * 删除一个定时任务（同时删除关联的Trigger）
+     *
+     * @param jobName  任务名
+     * @param jobGroup 任务组名
+     */
+    void deleteJob(String jobName, String jobGroup) throws SchedulerException;
 
 }

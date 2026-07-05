@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @TableName("sys_job")
 public class SysJob implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 主键ID
      */
@@ -27,9 +29,9 @@ public class SysJob implements Serializable {
     private String jobGroup;
 
     /**
-     * 执行的 bean 方法标识
+     * 调用目标，格式：beanName.methodName
      */
-    private String beanName;
+    private String invokeTarget;
 
     /**
      * cron表达式
@@ -37,7 +39,7 @@ public class SysJob implements Serializable {
     private String cronExpression;
 
     /**
-     * 任务状态：1-正常，0-禁用
+     * 任务状态：0-暂停，1-运行中
      */
     private Integer status;
 
@@ -55,13 +57,13 @@ public class SysJob implements Serializable {
     /**
      * 创建时间
      */
-    @TableField(fill = com.baomidou.mybatisplus.annotation.FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
-    @TableField(fill = com.baomidou.mybatisplus.annotation.FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
 }

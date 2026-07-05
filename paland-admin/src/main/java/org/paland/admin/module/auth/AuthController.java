@@ -1,6 +1,5 @@
-package org.paland.system.module.auth.controller;
+package org.paland.admin.module.auth;
 
-import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.paland.common.result.Result;

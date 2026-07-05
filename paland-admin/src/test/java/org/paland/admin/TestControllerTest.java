@@ -1,4 +1,4 @@
-package org.paland;
+package org.paland.admin;
 
 import org.junit.jupiter.api.Test;
 import org.paland.common.result.ResultCode;
