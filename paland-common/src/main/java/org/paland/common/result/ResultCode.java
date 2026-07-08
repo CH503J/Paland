@@ -24,14 +24,19 @@ public enum ResultCode {
     // ========== 通用失败（5xx 语义） ==========
     SYSTEM_ERROR("SYSTEM_ERROR", "系统内部错误", 500),
 
-    // ========== 业务相关（举例，后续按需扩展） ==========
+    // ========== 用户模块 ==========
     USER_NOT_FOUND("USER_NOT_FOUND", "用户不存在", 404),
     USER_ALREADY_EXISTS("USER_ALREADY_EXISTS", "用户已存在", 409),
 
-    // ========== 定时任务相关 ==========
-    INVALID_CRON_EXPRESSION("INVALID_CRON_EXPRESSION", "cron表达式无效", 400),
+    // ========== 定时任务模块 ==========
+    INVALID_CRON_EXPRESSION("INVALID_CRON_EXPRESSION", "Cron表达式非法", 400),
     JOB_STATUS_INVALID("JOB_STATUS_INVALID", "定时任务状态无效", 400),
-    JOB_NOT_FOUND("JOB_NOT_FOUND", "定时任务不存在", 404);
+    JOB_NOT_FOUND("JOB_NOT_FOUND", "定时任务不存在", 404),
+    JOB_IS_RUNNING("JOB_IS_RUNNING", "定时任务正在运行中", 409),
+
+    // 修复：将原先一堆 500 的动作失败聚合成一个，保持枚举类的清爽
+    JOB_OPERATION_FAILED("JOB_OPERATION_FAILED", "定时任务操作失败", 500),
+    JOB_EXECUTION_FAILED("JOB_EXECUTION_FAILED", "任务执行失败", 500);
 
     private final String code;
     private final String message;

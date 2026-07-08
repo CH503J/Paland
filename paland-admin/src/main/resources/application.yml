@@ -21,18 +21,28 @@ spring:
   quartz:
     job-store-type: jdbc
     jdbc:
-      # never 表示不让 spring 参与建表，所以只能手动建表
-      initialize-schema: never
+      initialize-schema: never  # 手动建表，不自动初始化
     properties:
       org:
         quartz:
-          jobStore:
-            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-            useProperties: false
-            tablePrefix: QRTZ_
           scheduler:
             instanceName: PalandScheduler
             instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX # 显式指定持久化类
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: true                             # 开启集群
+            clusterCheckinInterval: 15000                 # 集群心跳间隔
+            txIsolationLevelSerializable: true            # 开启序列化隔离级别防死锁
+            useProperties: false
+            # ！！！这里解决之前的 DataSource name not set 报错！！！
+            # 当 job-store-type 是 jdbc 时，Spring 会自动把默认数据源绑定给 quartz
+            # 但如果底层内核继续找别名，这里可以显式指定。在 Spring 托管下通常这一行可以不用配
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 20                               # 线程池并发数
+            threadPriority: 5
 
 mybatis-plus:
   global-config:
