@@ -8,6 +8,7 @@ COPY pom.xml .
 COPY paland-admin/pom.xml paland-admin/
 COPY paland-common/pom.xml paland-common/
 COPY paland-system/pom.xml paland-system/
+COPY paland-quartz/pom.xml paland-quartz/
 
 # 后续新增子模块时，在这里追加一行，例如：
 # COPY paland-common/pom.xml paland-common/
