@@ -13,6 +13,7 @@
         <module>paland-admin</module>
         <module>paland-common</module>
         <module>paland-system</module>
+        <module>paland-quartz</module>
     </modules>
 
     <properties>

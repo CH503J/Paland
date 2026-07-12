@@ -40,7 +40,14 @@
             <artifactId>paland-system</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
+        <dependency>
+            <groupId>org.paland</groupId>
+            <artifactId>paland-quartz</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

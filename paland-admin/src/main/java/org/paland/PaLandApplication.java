@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
 @Slf4j
 @SpringBootApplication
 @Import(cn.hutool.extra.spring.SpringUtil.class)
-@MapperScan(value = "org.paland.system.module", annotationClass = Mapper.class)
+@MapperScan("org.paland.**.mapper")
 public class PaLandApplication {
 
     // 测试 清理超过24小时未使用的缓存、镜像、容器 定时任务
